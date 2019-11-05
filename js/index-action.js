@@ -76,12 +76,16 @@
       });
     };
     detectWebcam(function (hasWebcam) {
-      // console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
+      console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
+      /*
+       *
       if (!hasWebcam) {
         $('#type2').hide();
       } else {
         $('#type2').show();
       }
+       *
+       */
     });
 
     /*----------------------------------------------------*/
