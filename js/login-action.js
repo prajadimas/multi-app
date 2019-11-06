@@ -16,7 +16,7 @@
 	/*	check identification type
 	------------------------------------------------------ */
   $.ajax({
-    url: "http://e-agriculture.net:50005/api/identification/type",
+    url: "https://e-agriculture.net:50005/api/identification/type",
     type: "GET",
     success: function (result) {
       // Get result of identification
