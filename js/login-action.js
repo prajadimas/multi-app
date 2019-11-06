@@ -22,6 +22,7 @@
       // Get result of identification
       var indexID = 1;
       console.log(result);
+      console.log(navigator.platform);
       $('#identity-types').append('<div id=\"identitySelection\" class=\"selection-box item-wrap\">');
       for (var i = 0; i < result.length; i++) {
         if (i == 1) {
@@ -76,16 +77,12 @@
       });
     };
     detectWebcam(function (hasWebcam) {
-      console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
-      /*
-       *
+      // console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
       if (!hasWebcam) {
         $('#type2').hide();
       } else {
         $('#type2').show();
       }
-       *
-       */
     });
 
     /*----------------------------------------------------*/
