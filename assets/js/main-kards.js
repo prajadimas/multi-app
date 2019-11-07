@@ -73,12 +73,13 @@
       var sLoader = $('#submit-loader');
 			$.ajax({
         method: "POST",
-		    url: "http://localhost:8000",
+		    url: "http://e-agriculture.net:50005/api/identification/data",
 		    data: {
           'username': $('input[name=userName]').val(),
           'atributevalue': $('input[name=userPass]').val(),
           'ididentitytype': 1
         },
+        contentType: 'application/x-www-form-urlencoded',
 		    beforeSend: function () {
           console.log({
             'username': $('input[name=userName]').val(),
@@ -89,14 +90,18 @@
 		    },
 		    success: function (result) {
           // Message was sent
-	        if (result == 'OK') {
+          console.log(result);
+	        if (result.includes('OK')) {
 	           sLoader.fadeOut();
 	           $('#message-warning').hide();
 	           $('#contactForm').fadeOut();
+             $('#message-success').append('user ' + result.userName + ' (' + result.nim + '), success login');
 	           $('#message-success').fadeIn();
+             $('#availableIdentityTypes').hide();
+             $('#tryAgain').show();
 	        } else { // There was an error
 	           sLoader.fadeOut();
-	           $('#message-warning').html(msg);
+	           $('#message-warning').html("Failed");
 		         $('#message-warning').fadeIn();
 	        }
 		    },

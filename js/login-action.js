@@ -11,12 +11,17 @@
   navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
   var webcamStream;
   var socket = [null,null];
+  $('#tryAgain').hide();
+
+  $('#tryAgain').click(function (evt) {
+    location.reload(true);
+  });
 
   /*---------------------------------------------------- */
 	/*	check identification type
 	------------------------------------------------------ */
   $.ajax({
-    url: "https://e-agriculture.net:50005/api/identification/type",
+    url: "http://e-agriculture.net:50005/api/identification/type",
     type: "GET",
     success: function (result) {
       // Get result of identification
@@ -62,6 +67,7 @@
         // console.log(e.currentTarget.id.split('-')[1]);
         $('#reader' + (e.currentTarget.id.split('-')[1])).val('');
       }
+      $('#submit-loader').fadeOut();
       e.preventDefault();
      	$.magnificPopup.close();
     });
@@ -91,6 +97,12 @@
     // console.log('socket length: ', socket.length);
     socket.forEach(function (item,index) {
       if (index > 1) {
+        $('#type' + (index + 1)).click(function (evt) {
+          // console.log(evt);
+          // console.log($('.mfp-content'));
+          $('#submit-loader').fadeIn();
+          $('#message-warning').fadeOut();
+        });
         if (socket[index]) {
           socket[index].on('disconnect', function () {
             // console.log('socket[' + index + ']: ', socket[index]);
@@ -111,7 +123,7 @@
     /*----------------------------------------------------*/
   	/*	Function to start webcam
   	------------------------------------------------------*/
-    function startWebcam() {
+    function startWebcam(next) {
       if (navigator.getUserMedia) {
         navigator.getUserMedia ({
           video: true,
@@ -121,6 +133,25 @@
         function (localMediaStream) {
           webcamStream = localMediaStream;
           video.srcObject = localMediaStream;
+
+          /*
+           *
+
+          var countdown = 4;
+          var x = setInterval(function () {
+            countdown--
+            console.log(countdown);
+            if (countdown == 1) {
+              clearInterval(x);
+            }
+          }, 1000);
+
+           *
+           */
+
+          setTimeout(function () {
+            next();
+          }, 1000);
         },
         // errorCallback
         function(err) {
@@ -148,13 +179,70 @@
     }
 
     /*----------------------------------------------------*/
+  	/*	Function to get video frame
+  	------------------------------------------------------*/
+    // returns a frame encoded in base64
+    var sendFrame = () => {
+      if (video.srcObject) {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const data = canvas.toDataURL('image/png');
+        var formIdentificationData = {
+          ididentitytype: 2,
+          atributvalue: data
+        }
+        // console.log(formIdentificationData);
+        $.ajax({
+          url: 'http://e-agriculture.net:50005/api/identification/data',
+          type: 'POST',
+          data: formIdentificationData,
+          // dataType: 'application/json', // what type of data do we expect back from the server
+          contentType: 'application/x-www-form-urlencoded',
+          success: function (res) {
+            console.log(res);
+            if (res.userName) {
+              $('#submit-loader').fadeOut();
+              $('#message-warning').hide();
+ 	            $('#contactForm').fadeOut();
+              $('#message-success').append('user ' + res.userName + ' (' + res.nim + '), success login');
+              $('#message-success').fadeIn();
+              $('#modal-2-dismiss').trigger('click');
+              $('#availableIdentityTypes').hide();
+              $('#tryAgain').show();
+              stopWebcam();
+            } else {
+              sendFrame();
+            }
+          },
+          error: function (err) {
+            console.log('error: ', err);
+          }
+        });
+      }
+    }
+
+    /*----------------------------------------------------*/
   	/*	Face Recognition Identity Types click event
   	------------------------------------------------------*/
     $('#type2').click(function (evt) {
       // console.log(evt);
       // console.log($('.mfp-content'));
       $('#submit-loader').fadeIn();
-      startWebcam();
+      startWebcam(sendFrame);
+
+      /*
+       *
+
+      const FPS = 3;
+      setInterval(() => {
+        getFrame();
+      }, 1000/FPS);
+
+       *
+       */
+
     });
 
     $('#modal-2-dismiss').click(function (evt) {
