@@ -76,22 +76,17 @@
 		    url: "http://e-agriculture.net:50005/api/identification/data",
 		    data: {
           'username': $('input[name=userName]').val(),
-          'atributevalue': $('input[name=userPass]').val(),
+          'atributvalue': $('input[name=userPass]').val(),
           'ididentitytype': 1
         },
         contentType: 'application/x-www-form-urlencoded',
 		    beforeSend: function () {
-          console.log({
-            'username': $('input[name=userName]').val(),
-            'atributevalue': $('input[name=userPass]').val(),
-            'ididentitytype': 1
-          });
           sLoader.fadeIn();
 		    },
 		    success: function (result) {
           // Message was sent
-          console.log(result);
-	        if (result.includes('OK')) {
+          // console.log(result);
+	        if (result.userName) {
 	           sLoader.fadeOut();
 	           $('#message-warning').hide();
 	           $('#contactForm').fadeOut();
@@ -101,14 +96,18 @@
              $('#tryAgain').show();
 	        } else { // There was an error
 	           sLoader.fadeOut();
-	           $('#message-warning').html("Failed");
+             $('#userName').val("");
+             $('#userPass').val("");
+	           $('#message-warning').html("Login failed");
 		         $('#message-warning').fadeIn();
 	        }
 		    },
 		    error: function () {
           sLoader.fadeOut();
-		      $('#message-warning').html("Something went wrong. Please try again.");
-		      $('#message-warning').fadeIn();
+          $('#userName').val("");
+          $('#userPass').val("");
+          $('#message-warning').html("Login failed");
+          $('#message-warning').fadeIn();
 		    }
       });
   	}

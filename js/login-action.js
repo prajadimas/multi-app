@@ -201,7 +201,7 @@
           // dataType: 'application/json', // what type of data do we expect back from the server
           contentType: 'application/x-www-form-urlencoded',
           success: function (res) {
-            console.log(res);
+            // console.log(res);
             if (res.userName) {
               $('#submit-loader').fadeOut();
               $('#message-warning').hide();
