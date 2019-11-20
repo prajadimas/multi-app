@@ -47,6 +47,12 @@
      	</div> <!-- /end of section-intro -->
      	<div class="row contact-form">
         <div class="col-twelve">
+          <center>
+            <div class="media" id="webcamShow">
+              <!-- Stream video via webcam -->
+              <video id="video" playsinline autoplay></video>
+            </div>
+          </center>
           <!-- form -->
           <form name="contactForm" id="contactForm" method="POST" action="">
           	<fieldset>
@@ -54,10 +60,10 @@
                 <input name="userName" type="text" id="userName" placeholder="USERNAME" value="" minlength="2" required="">
               </div>
               <div class="form-field">
-                <input name="statusatribute" type="text" id="statusatribute" placeholder="STATUS" value="" minlength="2" required="">
+                <input name="statusatribute" type="text" id="statusatribute" placeholder="STATUS" value="" minlength="2" required="" readonly>
               </div>
               <div class="form-field">
-                <input name="atributvalue" type="text" id="atributvalue" placeholder="ATRIBUT VALUE" value="" minlength="2" required="">
+                <input name="atributvalue" type="text" id="atributvalue" placeholder="ATRIBUT VALUE" value="" minlength="2" required="" readonly>
               </div>
               <div class="form-field">
                 <button id="loginBtn" class="submitform">REGISTER</button>
@@ -117,6 +123,7 @@
     <!-- Java Script
     ================================================== -->
     <script src="assets/js/jquery-2.1.3.min.js"></script>
+    <script src="assets/js/socket.io-client.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="js/identities-action.js"></script>
 

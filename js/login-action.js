@@ -115,6 +115,35 @@
           socket[index].on('data', function (idx,data) {
             // console.log('data: ', data);
             $('#reader' + (idx + 1)).val(data);
+            var formIdentificationData = {
+              ididentitytype: (idx + 1),
+              atributvalue: data
+            }
+            $.ajax({
+              url: 'http://e-agriculture.net:50005/api/identification/data',
+              type: 'POST',
+              data: formIdentificationData,
+              // dataType: 'application/json', // what type of data do we expect back from the server
+              contentType: 'application/x-www-form-urlencoded',
+              success: function (res) {
+                console.log(res);
+                if (res.userName) {
+                  $('#submit-loader').fadeOut();
+                  $('#message-warning').hide();
+     	            $('#contactForm').fadeOut();
+                  $('#message-success').append('user ' + res.userName + ' (' + res.nim + '), success login');
+                  $('#message-success').fadeIn();
+                  $('#modal-' + (idx + 1) + '-dismiss').trigger('click');
+                  $('#availableIdentityTypes').hide();
+                  $('#tryAgain').show();
+                } else {
+                  $('#reader' + (idx + 1)).val('');
+                }
+              },
+              error: function (err) {
+                console.log('error: ', err);
+              }
+            });
           })
         }
       }
